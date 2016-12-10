@@ -1,0 +1,44 @@
+{
+    "name": "RPI-Mirror",
+    "version": "0.0.1",
+    "description": "An application to turn an raspberry pi  into a smart mirror",
+    "author": "Tyler Bauer <tcbauer516@gmail.com>",
+    //   "contributors": [{
+    //   "name": "Foo Bar",
+    //   "email": "foo.bar@example.com"
+    // }],
+    //   "bin": {
+    //   "module-name": "./bin/module-name"
+    // },
+    "scripts": {
+        // "test": "vows --spec --isolate",
+        "start": "node main.js",
+        // "prepublish": "coffee --bare --compile --output lib/foo src/foo/*.coffee"
+    },
+    // "main": "lib/foo.js",
+    // "repository": {
+    //     "type": "git",
+    //     "url": "https://github.com/nodejitsu/browsenpm.org"
+    // },
+    // "bugs": {
+    //     "url": "https://github.com/nodejitsu/browsenpm.org/issues"
+    // },
+    "keywords": [
+        "raspberry",
+        "pi",
+        "mirror"
+    ],
+    "dependencies": {
+        "express": "latest",
+        "electron": "latest"
+    },
+    "devDependencies": {
+        
+    },
+    "preferGlobal": true,
+    "private": true,
+    // "publishConfig": {
+    //     "registry": "https://your-private-hosted-npm.registry.nodejitsu.com"
+    // },
+    "license": "MIT"
+}

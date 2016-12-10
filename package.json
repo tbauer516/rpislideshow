@@ -1,0 +1,24 @@
+{
+    "name": "RPI-Mirror",
+    "version": "0.0.1",
+    "description": "An application to turn an raspberry pi  into a smart mirror",
+    "author": "Tyler Bauer <tcbauer516@gmail.com>",
+    "scripts": {
+        "start": "node main.js"
+    },
+    "keywords": [
+        "raspberry",
+        "pi",
+        "mirror"
+    ],
+    "dependencies": {
+        "express": "latest",
+        "electron": "latest"
+    },
+    "devDependencies": {
+        
+    },
+    "preferGlobal": true,
+    "private": true,
+    "license": "MIT"
+}
