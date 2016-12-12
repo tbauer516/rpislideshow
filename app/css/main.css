@@ -1,0 +1,11 @@
+/*@import url('https://fonts.googleapis.com/css?family=Josefin+Sans');*/
+@font-face {
+	font-family: 'Josefin Sans';
+	src: url(../fonts/JosefinSans-Regular.ttf) format('truetype');
+}
+
+body {
+	background-color: black;
+	color: white;
+	font-family: 'Josefin Sans', sans-serif;
+}
