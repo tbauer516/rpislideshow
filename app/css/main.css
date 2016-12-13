@@ -9,3 +9,43 @@ body {
 	color: white;
 	font-family: 'Josefin Sans', sans-serif;
 }
+
+div.weather-item {
+	margin-top: 15px;
+}
+
+p {
+	margin: 0;
+}
+
+svg {
+	width: 20pt;
+	height: 20pt;
+	display: block;
+	margin-right: 0;
+	margin-left: auto;
+}
+
+svg path {
+	fill: currentColor;
+}
+
+.block {
+	display: block;
+}
+
+.weather-main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	text-align: center;
+	position: absolute;
+	max-width: 300px;
+	margin-right: 0px;
+	right: 0;
+	top: 0;
+}
+
+.weather-item {
+	flex: 1 0 24.5%;
+}
