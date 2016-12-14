@@ -8,6 +8,7 @@ body {
 	background-color: black;
 	color: white;
 	font-family: 'Josefin Sans', sans-serif;
+	margin: 0px;
 }
 
 div.weather-item {
@@ -34,18 +35,44 @@ svg path {
 	display: block;
 }
 
-.weather-main {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-around;
-	text-align: center;
+.weather {
 	position: absolute;
-	max-width: 300px;
-	margin-right: 0px;
+	max-width: 40%;
+	margin-top: 15px;
+	margin-right: 15px;
 	right: 0;
 	top: 0;
 }
 
+.weather-head {
+	border: 2px solid white;
+	margin-left: 40px;
+}
+
+.weather-head, .weather-main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	text-align: center;
+}
+
 .weather-item {
 	flex: 1 0 24.5%;
+	font-size: 16pt;
+}
+
+.weather-head .weather-item {
+	flex: 1 0 49%;
+	font-size: 26pt;
+}
+
+.weather-head .weather-item.weather-main-time {
+	flex: 1 0 99%;
+	font-size: 40pt;
+}
+
+.weather-head svg {
+	width: 80pt;
+	height: 80pt;
+	margin-right: auto;
 }

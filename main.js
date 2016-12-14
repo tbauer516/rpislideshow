@@ -5,13 +5,13 @@ const url = require('url');
 let win;
 
 let createWindow = function() {
-	win = new BrowserWindow({width: 1000, height: 500, frame: true}); //frame: false for production
+	win = new BrowserWindow({width: 1238, height: 1080, backgroundColor: '#000000', alwaysOnTop: false, frame: true}); //frame: false for production
 
 	win.loadURL(url.format({
 		pathname: path.join(__dirname, 'app/index.html'),
 		protocol: 'file:',
 		slashes: true
-	}));
+	}), {"extraHeaders" : "pragma: no-cache\n"});
 
 	win.webContents.openDevTools();
 	// win.setFullScreen(true);
