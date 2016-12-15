@@ -4,7 +4,7 @@
     "description": "An application to turn an raspberry pi  into a smart mirror",
     "author": "Tyler Bauer <tcbauer516@gmail.com>",
     "scripts": {
-        "start": "\"C:/Users/tbauer516/Desktop/code/rpimirror/node_modules/electron/dist/electron.exe\" ."
+        "start": "electron ."
     },
     "main": "main.js",
     "keywords": [
@@ -14,13 +14,12 @@
     ],
     "dependencies": {
         "express": "latest",
-        "electron": "latest",
         "path": "latest",
         "url": "latest",
         "fs": "latest"
     },
     "devDependencies": {
-        
+        "electron": "latest"
     },
     "preferGlobal": true,
     "private": true,
