@@ -4,7 +4,8 @@
     "description": "An application to turn an raspberry pi  into a smart mirror",
     "author": "Tyler Bauer <tcbauer516@gmail.com>",
     "scripts": {
-        "start": "electron ."
+        "start": "electron .",
+        "preinstall": "npm install -g node-gyp"
     },
     "main": "main.js",
     "keywords": [
@@ -13,13 +14,16 @@
         "mirror"
     ],
     "dependencies": {
+        "@google-cloud/speech": "latest",
         "express": "latest",
         "path": "latest",
         "url": "latest",
-        "fs": "latest"
+        "fs": "latest",
+        "msr": "latest"
     },
     "devDependencies": {
-        "electron": "latest"
+        "electron": "latest",
+        "electron-rebuild": "latest"
     },
     "preferGlobal": true,
     "private": true,

@@ -1,5 +1,6 @@
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
+const MediaStreamRecorder = require('electron').remote.require('msr');
 
 const DARKSKY = 'https://api.darksky.net/forecast/';
 const API_KEY = fs.readFileSync('app/js/apiKey.txt', 'utf8');
@@ -175,6 +176,66 @@ setInterval(getCurrentData, 300000);
 
 getForecastData();
 setInterval(getForecastData, 21600000); // Refresh every 6 hours
+
+// console.log('require-msr', MediaStreamRecorder);
+
+// console.log('\n\n-------\n\n');
+
+// var recorder = new MediaStreamRecorder({});
+// console.log('MediaStreamRecorder', recorder);
+
+// console.log('\n\n-------\n\n');
+
+// var multiStreamRecorder = new MediaStreamRecorder.MultiStreamRecorder({});
+// console.log('MultiStreamRecorder', multiStreamRecorder);
+
+// var mediaConstraints = {
+//     audio: true
+// };
+
+
+// function onMediaSuccess(stream) {
+//     var mediaRecorder = new MediaStreamRecorder(stream);
+//     mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
+//     mediaRecorder.ondataavailable = function (blob) {
+//         // POST/PUT "Blob" using FormData/XHR2
+//         var blobURL = URL.createObjectURL(blob);
+//         document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
+//         console.log(blobURL);
+//     };
+//     mediaRecorder.start(3000);
+// }
+
+// function onMediaError(e) {
+//     console.error('media error', e);
+// }
+
+// navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+
+
+// [START speech_quickstart]
+// Imports the Google Cloud client library
+const speech = require('@google-cloud/speech')({
+	projectId: 'rpi-mirror-152523',
+  	keyFilename: '../rpimirror-f7e39e43cd34.json'
+});
+
+// // The name of the audio file to transcribe
+const fileName = '../resources/audio.raw';
+
+// // The audio file's encoding and sample rate
+const options = {
+  encoding: 'LINEAR16',
+  sampleRate: 16000
+};
+
+// Detects speech in the audio file
+speech.recognize(fileName, options)
+  .then((results) => {
+    const transcription = results[0];
+    console.log(`Transcription: ${transcription}`);
+  });
+// [END speech_quickstart]
 
 // document.addEventListener('keydown', function(e) {
 // 	console.log(e);

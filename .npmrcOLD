@@ -1,0 +1,5 @@
+target = 1.4.12
+target_arch = x64
+runtime = electron
+dist_url = https://atom.io/download/electron
+build_from_source=true
