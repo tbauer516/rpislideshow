@@ -215,26 +215,34 @@ setInterval(getForecastData, 21600000); // Refresh every 6 hours
 
 // [START speech_quickstart]
 // Imports the Google Cloud client library
+const Sonus = require('sonus');
 const speech = require('@google-cloud/speech')({
 	projectId: 'rpi-mirror-152523',
   	keyFilename: '../rpimirror-f7e39e43cd34.json'
 });
 
-// // The name of the audio file to transcribe
-const fileName = '../resources/audio.raw';
+const hotwords = [{ file: '../resources/snowboy.umdl', hotword: 'snowboy' }];
+const sonus = Sonus.init({ hotwords }, speech);
 
-// // The audio file's encoding and sample rate
-const options = {
-  encoding: 'LINEAR16',
-  sampleRate: 16000
-};
+Sonus.start(sonus);
+sonus.on('hotword', (index, keyword) => console.log('You Spoke!'));
+sonus.on('final-result', console.log);
 
-// Detects speech in the audio file
-speech.recognize(fileName, options)
-  .then((results) => {
-    const transcription = results[0];
-    console.log(`Transcription: ${transcription}`);
-  });
+// // // The name of the audio file to transcribe
+// const fileName = '../resources/audio.raw';
+
+// // // The audio file's encoding and sample rate
+// const options = {
+//   encoding: 'LINEAR16',
+//   sampleRate: 16000
+// };
+
+// // Detects speech in the audio file
+// speech.recognize(fileName, options)
+//   .then((results) => {
+//     const transcription = results[0];
+//     console.log(`Transcription: ${transcription}`);
+//   });
 // [END speech_quickstart]
 
 // document.addEventListener('keydown', function(e) {

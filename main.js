@@ -1,7 +1,13 @@
 const {app, BrowserWindow, ipcMain, globalShortcut} = require('electron');
 const path = require('path');
 const url = require('url');
-const MediaStreamRecorder = require('msr');
+const fs = require('fs');
+
+let keys = fs.readFileSync('app/js/googleApi.txt', 'utf8');
+process.env.GOOGLE_API_KEY = keys.split('\n')[0];
+process.env.GOOGLE_DEFAULT_CLIENT_ID = keys.split('\n')[1];
+process.env.GOOGLE_DEFAULT_CLIENT_SECRET = keys.split('\n')[2];
+// fs.readFileSync('app/js/googleApi.txt', 'utf8');
 
 let win;
 

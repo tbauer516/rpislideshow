@@ -1,29 +1,31 @@
 {
-    "name": "RPI-Mirror",
-    "version": "0.0.1",
-    "description": "An application to turn an raspberry pi  into a smart mirror",
-    "author": "Tyler Bauer <tcbauer516@gmail.com>",
-    "scripts": {
-        "start": "electron ."
-    },
-    "main": "main.js",
-    "keywords": [
-        "raspberry",
-        "pi",
-        "mirror"
-    ],
-    "dependencies": {
-        "@google-cloud/speech": "latest",
-        "express": "latest",
-        "path": "latest",
-        "url": "latest",
-        "fs": "latest",
-        "msr": "latest"
-    },
-    "devDependencies": {
-        "electron": "latest"
-    },
-    "preferGlobal": true,
-    "private": true,
-    "license": "MIT"
+  "name": "RPI-Mirror",
+  "version": "0.0.1",
+  "description": "An application to turn an raspberry pi  into a smart mirror",
+  "author": "Tyler Bauer <tcbauer516@gmail.com>",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "sudo apt-get install sox libsox-fmt-all"
+  },
+  "main": "main.js",
+  "keywords": [
+    "raspberry",
+    "pi",
+    "mirror"
+  ],
+  "dependencies": {
+    "@google-cloud/speech": "latest",
+    "express": "latest",
+    "fs": "latest",
+    "path": "latest",
+    "url": "latest",
+    "sonus": "latest"
+  },
+  "devDependencies": {
+    "electron": "latest"
+  },
+  "os" : [ "!win32" ],
+  "preferGlobal": true,
+  "private": true,
+  "license": "MIT"
 }
