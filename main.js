@@ -26,7 +26,7 @@ let createWindow = function() {
 	win.on('closed', () => {
 		win = null
 	});
-		
+
 }
 
 app.on('ready', function() {

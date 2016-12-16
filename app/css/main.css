@@ -35,6 +35,17 @@ svg path {
 	display: block;
 }
 
+.communication {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+}
+
+.hide {
+	display: none;
+}
+
 .weather {
 	position: absolute;
 	max-width: 40%;
@@ -42,6 +53,18 @@ svg path {
 	margin-right: 15px;
 	right: 0;
 	top: 0;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 2s, opacity 2s linear;
+}
+
+.visible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 2s linear;
 }
 
 .weather-head {

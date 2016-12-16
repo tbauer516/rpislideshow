@@ -4,9 +4,9 @@
   "description": "An application to turn an raspberry pi  into a smart mirror",
   "author": "Tyler Bauer <tcbauer516@gmail.com>",
   "scripts": {
-    "start": "electron .",
-    "preinstall": "sudo npm install -g node-gyp; sudo apt-get install sox libsox-fmt-all;"
+    "start": "electron ."
   },
+  "//": "sudo npm install -g node-gyp; sudo apt-get install sox libsox-fmt-all;",
   "main": "main.js",
   "keywords": [
     "raspberry",
@@ -14,13 +14,12 @@
     "mirror"
   ],
   "dependencies": {
-    "@google-cloud/speech": "latest",
-    "express": "latest",
     "fs": "latest",
     "path": "latest",
-    "url": "latest",
-    "sonus": "latest"
+    "url": "latest"
   },
+  "//": "@google-cloud/speech: latest",
+  "//": "Sonus: latest",
   "devDependencies": {
     "electron": "latest"
   },
