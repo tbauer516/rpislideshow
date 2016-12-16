@@ -217,7 +217,7 @@ let startRecognition = function() {
 		console.log('end');
 	};
 	recognition.onerror = function(error) {
-		// console.log(error);
+		console.log(error);
 	};
 	recognition.lang = "en-US";
 	recognition.start();
