@@ -1,12 +1,14 @@
-// const {ipcRenderer} = require('electron');
+const {ipcRenderer} = require('electron');
 const fs = require('fs');
-// const electronSpeech = require('electron-speech');
+const MediaStreamRecorder = require('electron').remote.require('msr');
 
 const DARKSKY = 'https://api.darksky.net/forecast/';
-const API_KEY = fs.readFileSync('app/js/darknet.txt', 'utf8');
+const API_KEY = fs.readFileSync('app/js/apiKey.txt', 'utf8');
 const LAT = 47.6062;
 const LNG = -122.3321;
 const EXCLUDE = '?exclude=minutely,hourly,alerts,flags';
+
+
 
 var ensureTime = function(time) {
 	time += '';
@@ -165,6 +167,20 @@ var renderTime = function() {
 	timeE.append($('<p class="block">' + getTime() + '</p>'));
 }
 
+var displayOn = false;
+var toggleDisplay = function(turnOn) {
+	let weather = $('.weather');
+	if ((turnOn != undefined && !turnOn) || displayOn) {
+		weather.removeClass('visible');
+		weather.addClass('hidden');
+		displayOn = false;
+	} else if ((turnOn != undefined && turnOn) || !displayOn) {
+		weather.removeClass('hidden');
+		weather.addClass('visible');
+		displayOn = true;
+	}
+}
+
 renderTime();
 setInterval(renderTime, 1000);
 
@@ -175,9 +191,57 @@ setInterval(getCurrentData, 300000);
 getForecastData();
 setInterval(getForecastData, 21600000); // Refresh every 6 hours
 
-// var grammar = '#JSGF V1.0; grammar commands; public <command> = what is weather | close weather;'
-// var speechRecognitionList = new webkitSpeechGrammarList();
-// speechRecognitionList.addFromString(grammar, 1);
+// console.log('require-msr', MediaStreamRecorder);
+
+// console.log('\n\n-------\n\n');
+
+// var recorder = new MediaStreamRecorder({});
+// console.log('MediaStreamRecorder', recorder);
+
+// console.log('\n\n-------\n\n');
+
+// var multiStreamRecorder = new MediaStreamRecorder.MultiStreamRecorder({});
+// console.log('MultiStreamRecorder', multiStreamRecorder);
+
+// var mediaConstraints = {
+//     audio: true
+// };
+
+
+// function onMediaSuccess(stream) {
+//     var mediaRecorder = new MediaStreamRecorder(stream);
+//     mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
+//     mediaRecorder.ondataavailable = function (blob) {
+//         // POST/PUT "Blob" using FormData/XHR2
+//         var blobURL = URL.createObjectURL(blob);
+//         document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
+//         console.log(blobURL);
+//     };
+//     mediaRecorder.start(3000);
+// }
+
+// function onMediaError(e) {
+//     console.error('media error', e);
+// }
+
+// navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+
+
+// [START speech_quickstart]
+// Imports the Google Cloud client library
+const Sonus = require('sonus');
+const speech = require('@google-cloud/speech')({
+	projectId: 'rpi-mirror-152523',
+  	keyFilename: '../rpimirror-f7e39e43cd34.json'
+});
+
+const hotwords = [{ file: '../resources/snowboy.umdl', hotword: 'snowboy' }];
+const sonus = Sonus.init({ hotwords }, speech);
+
+Sonus.start(sonus);
+sonus.on('hotword', (index, keyword) => console.log('You Spoke!'));
+sonus.on('final-result', console.log);
+
 
 let startRecognition = function() {
 	recognition = new webkitSpeechRecognition();
@@ -245,128 +309,6 @@ let respond = function(message) {
 
 let recognition;
 startRecognition();
-// var recog = electronSpeech({
-// 	lang: 'en-US',
-// 	continuous: false
-// })
-//
-String.prototype.MC = function(commandStr) {
-	console.log(this);
-	let commands = / +(?=[^()]*(\(|$))/;
-	let chunks = commandStr.split(commands);
-	if (this.split(commands).length < chunks.length)
-		return false;
-	console.log('chunks:');
-	console.log(chunks);
-	for (let i = 0; i < chunks.length; i++) {
-		let chunk = chunks[i].trim();
-		if (chunk != '') {
-			let bits;
-			if (chunk.indexOf(' ') != -1) {
-				bits = chunk.split(/\s+/);
-				bits[0] = bits[0].slice(1);
-				bits[bits.length - 1] = bits[bits.length - 1].slice(0, bits[bits.length - 1].length - 1);
-
-			} else {
-				bits = [chunk];
-			}
-			console.log('bits:');
-			console.log(bits);
-			let found = false;
-			for (let j = 0; j < bits.length; j++) {
-				if (this.indexOf(bits[j]) !== -1) {
-					found = true;
-					console.log('found ' + bits[j]);
-					console.log(this.indexOf(bits[j]));
-				}
-			}
-			if (!found) {
-				console.log('returned false');
-				return false;
-			}
-		}
-	}
-	console.log('returned true');
-	return true;
-}
-//
-// recog.on('text', function (text) {
-// 	console.log(text)
-	// if (text.MC('what is weather')) {
-	// 	let weather = $('.weather');
-	// 	weather.removeClass('hidden');
-	// 	weather.addClass('visible');
-	// } else if (text.MC('(close clothes) weather')) {
-	// 	let weather = $('.weather');
-	// 	weather.removeClass('visible');
-	// 	weather.addClass('hidden');
-	// }
-// });
-//
-// recog.on('ready', function() {
-// 	console.log('ready to listen');
-// });
-//
-// recog.on('close', function() {
-// 	console.log('listening closed');
-// });
-//
-// recog.on('error', function(error) {
-// 	console.log(error);
-// });
-//
-// recog.listen()
-
-// console.log('require-msr', MediaStreamRecorder);
-
-// console.log('\n\n-------\n\n');
-
-// var recorder = new MediaStreamRecorder({});
-// console.log('MediaStreamRecorder', recorder);
-
-// console.log('\n\n-------\n\n');
-
-// var multiStreamRecorder = new MediaStreamRecorder.MultiStreamRecorder({});
-// console.log('MultiStreamRecorder', multiStreamRecorder);
-
-// var mediaConstraints = {
-//     audio: true
-// };
-
-
-// function onMediaSuccess(stream) {
-//     var mediaRecorder = new MediaStreamRecorder(stream);
-//     mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
-//     mediaRecorder.ondataavailable = function (blob) {
-//         // POST/PUT "Blob" using FormData/XHR2
-//         var blobURL = URL.createObjectURL(blob);
-//         document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
-//         console.log(blobURL);
-//     };
-//     mediaRecorder.start(3000);
-// }
-
-// function onMediaError(e) {
-//     console.error('media error', e);
-// }
-
-// navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
-
-
-// [START speech_quickstart]
-// Imports the Google Cloud client library
-// const Sonus = require('sonus');
-// const speech = require('@google-cloud/speech')({
-// 	projectId: 'rpi-mirror-152523',
-//   	keyFilename: '../rpimirror-f7e39e43cd34.json'
-// });
-//
-// const hotwords = [{ file: '../resources/snowboy.umdl', hotword: 'snowboy' }];
-// const sonus = Sonus.init({ hotwords }, speech);
-//
-// Sonus.start(sonus);
-// sonus.on('hotword', (index, keyword) => console.log('You Spoke!'));
-// sonus.on('final-result', console.log);
 
 // // // The name of the audio file to transcribe
 // const fileName = '../resources/audio.raw';
@@ -385,9 +327,10 @@ String.prototype.MC = function(commandStr) {
 //   });
 // [END speech_quickstart]
 
-// document.addEventListener('keydown', function(e) {
-// 	console.log(e);
-// 	if (e.key == 'q') {
-// 		ipcRenderer.send('asynchronous-message', 'test');
-// 	}
-// });
+document.addEventListener('keydown', function(e) {
+	console.log(e);
+	if (e.key == 't') {
+		// ipcRenderer.send('asynchronous-message', 'test');
+		toggleDisplay();
+	}
+});
