@@ -3,7 +3,7 @@ const fs = require('fs');
 // const MediaStreamRecorder = require('electron').remote.require('msr');
 
 const DARKSKY = 'https://api.darksky.net/forecast/';
-const API_KEY = fs.readFileSync('app/js/apiKey.txt', 'utf8');
+const API_KEY = fs.readFileSync('app/js/darknet.txt', 'utf8');
 const LAT = 47.6062;
 const LNG = -122.3321;
 const EXCLUDE = '?exclude=minutely,hourly,alerts,flags';
@@ -229,18 +229,18 @@ setInterval(getForecastData, 21600000); // Refresh every 6 hours
 
 // [START speech_quickstart]
 // Imports the Google Cloud client library
-const Sonus = require('sonus');
-const speech = require('@google-cloud/speech')({
-	projectId: 'rpi-mirror-152523',
-  	keyFilename: '../rpimirror-f7e39e43cd34.json'
-});
-
-const hotwords = [{ file: '../resources/snowboy.umdl', hotword: 'snowboy' }];
-const sonus = Sonus.init({ hotwords }, speech);
-
-Sonus.start(sonus);
-sonus.on('hotword', (index, keyword) => console.log('You Spoke!'));
-sonus.on('final-result', console.log);
+// const Sonus = require('sonus');
+// const speech = require('@google-cloud/speech')({
+// 	projectId: 'rpi-mirror-152523',
+//   	keyFilename: '../rpimirror-f7e39e43cd34.json'
+// });
+//
+// const hotwords = [{ file: '../resources/snowboy.umdl', hotword: 'snowboy' }];
+// const sonus = Sonus.init({ hotwords }, speech);
+//
+// Sonus.start(sonus);
+// sonus.on('hotword', (index, keyword) => console.log('You Spoke!'));
+// sonus.on('final-result', console.log);
 
 
 let startRecognition = function() {
@@ -308,7 +308,7 @@ let respond = function(message) {
 }
 
 let recognition;
-startRecognition();
+// startRecognition();
 
 // // // The name of the audio file to transcribe
 // const fileName = '../resources/audio.raw';
