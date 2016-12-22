@@ -1,6 +1,6 @@
-const {ipcRenderer} = require('electron');
+// const {ipcRenderer} = require('electron');
 const fs = require('fs');
-const MediaStreamRecorder = require('electron').remote.require('msr');
+// const MediaStreamRecorder = require('electron').remote.require('msr');
 
 const DARKSKY = 'https://api.darksky.net/forecast/';
 const API_KEY = fs.readFileSync('app/js/apiKey.txt', 'utf8');
