@@ -3,28 +3,23 @@
   "version": "0.0.1",
   "description": "An application to turn an raspberry pi  into a smart mirror",
   "author": "Tyler Bauer <tcbauer516@gmail.com>",
-  "main": "app/index.html",
-  "window": {
-    "toolbar": false,
-    "width": 720,
-    "height": 720
-  },
   "scripts": {
-    "start": "nw ."
+    "start": "sh kiosk.sh & node start.js",
+    "test": "sh test.sh & node start.js",
+    "serve": "node start.js"
   },
-  "//": "sudo npm install -g node-gyp; sudo apt-get install sox libsox-fmt-all;",
   "keywords": [
     "raspberry",
     "pi",
     "mirror"
   ],
   "dependencies": {
-    "fs": "latest",
-    "path": "latest",
-    "url": "latest"
+    "express": "latest",
+    "compression": "latest",
+    "fs": "latest"
   },
   "devDependencies": {
-    "nw": "latest"
+
   },
   "os" : [ "!win32" ],
   "preferGlobal": true,

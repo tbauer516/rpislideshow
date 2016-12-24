@@ -1,14 +1,17 @@
-// const {ipcRenderer} = require('electron');
-const fs = require('fs');
-// const MediaStreamRecorder = require('electron').remote.require('msr');
-
 const DARKSKY = 'https://api.darksky.net/forecast/';
-const API_KEY = fs.readFileSync('app/js/darknet.txt', 'utf8');
 const LAT = 47.6062;
 const LNG = -122.3321;
 const EXCLUDE = '?exclude=minutely,hourly,alerts,flags';
+var  API_KEY;
 
-
+$.get('http://localhost:8108/API', function(data) {
+	API_KEY = data;
+	$.ajaxSetup({
+		dataType:  'jsonp'
+	});
+	getCurrentData();
+	getForecastData();
+});
 
 var ensureTime = function(time) {
 	time += '';
@@ -33,12 +36,13 @@ var renderCurrentData  = function(data) {
 	let timeE = $('<p class="block">' + data.time + '</p>');
 	let tempE = $('<p class="block">' + data.temp + '&deg;</p>');
 	let windE = $('<p class="block">' + data.wind + 'mph</p>');
-	let iconE = fs.readFileSync('app/assets/weather/' + data.icon + '.svg', 'utf8');
-	iconE = $(iconE);
+	// let iconE = fs.readFileSync('app/assets/weather/' + data.icon + '.svg', 'utf8');
+	// let iconE = .load('../assets/weather/' + data.icon + '.svg');
+	// iconE = $(iconE);
 	let rainE = $('<p class="block">' + data.precip + '%</p>');
 
 	// head.append(divTemplate.clone().addClass('weather-main-time').append(timeE);
-	$('.weather-main-icon').empty().append(iconE);
+	$('.weather-main-icon').empty().load('../assets/weather/' + data.icon + '.svg');
 	$('.weather-main-stats').empty().append(tempE).append(windE).append(rainE);
 }
 
@@ -62,10 +66,10 @@ var renderForecastData = function(data) {
 		let rainE = $('<p class="block">' + data[i].rain + '%</p>');
 		let dayE = $('<p class="block">' + dayStrings[forecastDate.getDay()] + '</p>');
 
-		let iconE = fs.readFileSync('app/assets/weather/' + data[i].icon + '.svg', 'utf8');
-		iconE = $(iconE);
+		// let iconE = fs.readFileSync('app/assets/weather/' + data[i].icon + '.svg', 'utf8');
+		// iconE = $(iconE);
 
-		weather.append(divTemplate.clone().append(iconE));
+		weather.append(divTemplate.clone().load('../assets/weather/' + data[i].icon + '.svg'));
 		weather.append(divTemplate.clone().append(dayE));
 		weather.append(divTemplate.clone().append(highE).append(lowE));
 		weather.append(divTemplate.clone().append(windE).append(rainE));
@@ -185,10 +189,8 @@ renderTime();
 setInterval(renderTime, 1000);
 
 //300000 in 5 min
-getCurrentData();
 setInterval(getCurrentData, 300000);
 
-getForecastData();
 setInterval(getForecastData, 21600000); // Refresh every 6 hours
 
 // console.log('require-msr', MediaStreamRecorder);
