@@ -310,7 +310,7 @@ let respond = function(message) {
 }
 
 let recognition;
-// startRecognition();
+startRecognition();
 
 // // // The name of the audio file to transcribe
 // const fileName = '../resources/audio.raw';
@@ -332,7 +332,6 @@ let recognition;
 document.addEventListener('keydown', function(e) {
 	console.log(e);
 	if (e.key == 't') {
-		// ipcRenderer.send('asynchronous-message', 'test');
 		toggleDisplay();
 	}
 });
