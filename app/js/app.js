@@ -336,3 +336,4 @@ document.addEventListener('keydown', function(e) {
 		toggleDisplay();
 	}
 });
+toggleDisplay();
