@@ -3,9 +3,6 @@
 <head>
 	<title>RPI Mirror</title>
 
-	<!-- Insert this line above script imports  -->
-	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-
 	<script src="lib/js/jquery-3.1.1.min.js"></script>
 
 	<!-- <link href="lib/css/tether.min.css" rel="stylesheet"/>
@@ -16,11 +13,11 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
 
+	<script src="js/audioRecorder.js"></script>
+    <script src="js/callbackManager.js"></script>
+
 	<link href="css/main.css" rel="stylesheet"/>
 	<script defer src="js/app.js"></script>
-
-	<!-- Insert this line after script imports -->
-	<script>if (window.module) module = window.module;</script>
 
 </head>
 <body>
@@ -34,7 +31,16 @@
 		</div>
 	</div>
 	<div class="communication">
-		
+
+	</div>
+	<div class="output"></div>
+	<div class="current-status">
+		<div class="btnContainers">
+			<button id="startBtn">Start</button>
+			<button id="stopBtn">Stop</button>
+			<div id="recording-indicator"></div>
+			<select id="keyword"></select>
+		</div>
 	</div>
 </body>
 </html>
