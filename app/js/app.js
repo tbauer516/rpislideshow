@@ -394,6 +394,7 @@ function startUserMedia(stream) {
 var startRecording = function() {
 	var id = document.getElementById('keyword').value;
 	if (recorder && recorder.start(id)) displayRecording(true);
+	console.log('Listening...');
 };
 
 // Stops recording
@@ -525,11 +526,11 @@ window.onload = function() {
 			}
 			// This is a case when the recognizer has a new count number
 			if (e.data.hasOwnProperty('hyp')) {
-				console.log(e.data);
 				var newCount = e.data.hyp;
 				// TODO: logic for recognition here
 				if (e.data.hasOwnProperty('final') &&  e.data.final) {
 					newCount = 'Final: ' + newCount;
+					console.log(e.data.hyp.trim());
 					if (e.data.hyp.trim() == 'MAGIC CLOSE')
 						closeAll();
 					else if (e.data.hyp.trim() == 'MAGIC WEATHER')
