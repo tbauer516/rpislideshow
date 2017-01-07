@@ -361,7 +361,9 @@ function updateCount(count) {
 // This updates the UI when the app might get ready
 // Only when both recorder and recognizer are ready do we enable the buttons
 function updateUI() {
-	if (isRecorderReady && isRecognizerReady) startRecording();
+	if (isRecorderReady && isRecognizerReady) startBtn.disabled = false;
+	// TODO: uncomment and add to if statement in production
+	//startRecording();
 };
 
 // This is just a logging window where we display the status
@@ -394,6 +396,8 @@ function startUserMedia(stream) {
 var startRecording = function() {
 	var id = document.getElementById('keyword').value;
 	if (recorder && recorder.start(id)) displayRecording(true);
+	stopBtn.disabled = false;
+	startBtn.disabled = true;
 	console.log('Listening...');
 };
 
@@ -401,6 +405,8 @@ var startRecording = function() {
 var stopRecording = function() {
 	recorder && recorder.stop();
 	displayRecording(false);
+	stopBtn.disabled = true;
+	startBtn.disabled = false;
 };
 
 // Called once the recognizer is ready
