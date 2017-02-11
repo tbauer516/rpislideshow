@@ -1,3 +1,4 @@
+const http = require('http');
 const https = require('https');
 const express = require('express');
 const compression = require('compression');
@@ -21,7 +22,7 @@ app.all('*', function(req, res, next){
     if (req.secure) {
         return next();
     };
-    res.redirect('https://localhost:' + port + req.url);
+    res.redirect('https://localhost:' + (port + 1) + req.url);
     // res.redirect('https://' + req.hostname + ':' + port + req.url);
 });
 
@@ -41,6 +42,9 @@ app.get('/ICON', function(req, res, next) {
 
 app.get('/')
 
-const server = https.createServer(options, app).listen(port, function() {
-    console.log(`Application worker ${process.pid} started on port ${port}...`);
+const server = http.createServer(app).listen(port, function() {
+    console.log(`unsecure worker ${process.pid} started on port ${port}...`);
+})
+const secureServer = https.createServer(options, app).listen(port + 1, function() {
+    console.log(`secure worker ${process.pid} started on port ${port + 1}...`);
 });
