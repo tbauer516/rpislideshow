@@ -6,7 +6,8 @@
   "scripts": {
     "start": "sh kiosk.sh & node start.js",
     "test": "sh test.sh & node start.js",
-    "serve": "node start.js"
+    "serve": "node start.js",
+    "postinstall": "sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert/selfsigned.key -out cert/selfsigned.crt"
   },
   "keywords": [
     "raspberry",
@@ -16,7 +17,8 @@
   "dependencies": {
     "express": "latest",
     "compression": "latest",
-    "fs": "latest"
+    "fs": "latest",
+    "artyom.js": "latest"
   },
   "devDependencies": {
 
