@@ -7,7 +7,7 @@
     "start": "sh kiosk.sh & node start.js",
     "test": "sh test.sh & node start.js",
     "serve": "node start.js",
-    "postinstall": "sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert/selfsigned.key -out cert/selfsigned.crt"
+    "postinstall": "cp node_modules/artyom.js/build-vanilla/artyom.min.js app/lib/artyom.min.js"
   },
   "keywords": [
     "raspberry",

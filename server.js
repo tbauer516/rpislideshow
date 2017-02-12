@@ -11,7 +11,7 @@ const API_KEY = fs.readFileSync('app/resources/darknet.txt', 'utf8');
 
 app.use(compression());
 
-app.use('/', express.static(__dirname /*+ '/app'*/, {maxAge: oneDay}));
+app.use('/', express.static(__dirname + '/app', {maxAge: oneDay}));
 
 app.get('/API', function(req, res, next) {
     res.send(API_KEY);

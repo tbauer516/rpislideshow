@@ -42,7 +42,7 @@ var renderCurrentData  = function(data) {
 	let rainE = $('<p class="block">' + data.precip + '%</p>');
 
 	// head.append(divTemplate.clone().addClass('weather-main-time').append(timeE);
-	$('.weather-main-icon').empty().load('/app/assets/weather/' + data.icon + '.svg');
+	$('.weather-main-icon').empty().load('/assets/weather/' + data.icon + '.svg');
 	$('.weather-main-stats').empty().append(tempE).append(windE).append(rainE);
 }
 
@@ -69,7 +69,7 @@ var renderForecastData = function(data) {
 		// let iconE = fs.readFileSync('app/assets/weather/' + data[i].icon + '.svg', 'utf8');
 		// iconE = $(iconE);
 
-		weather.append(divTemplate.clone().load('/app/assets/weather/' + data[i].icon + '.svg'));
+		weather.append(divTemplate.clone().load('/assets/weather/' + data[i].icon + '.svg'));
 		weather.append(divTemplate.clone().append(dayE));
 		weather.append(divTemplate.clone().append(highE).append(lowE));
 		weather.append(divTemplate.clone().append(windE).append(rainE));
