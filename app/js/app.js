@@ -1,14 +1,17 @@
-// const {ipcRenderer} = require('electron');
-const fs = require('fs');
-// const MediaStreamRecorder = require('electron').remote.require('msr');
-
 const DARKSKY = 'https://api.darksky.net/forecast/';
-const API_KEY = fs.readFileSync('app/js/darknet.txt', 'utf8');
 const LAT = 47.6062;
 const LNG = -122.3321;
 const EXCLUDE = '?exclude=minutely,hourly,alerts,flags';
+var  API_KEY;
 
-
+$.get('http://localhost:8108/API', function(data) {
+	API_KEY = data;
+	$.ajaxSetup({
+		dataType:  'jsonp'
+	});
+	getCurrentData();
+	getForecastData();
+});
 
 var ensureTime = function(time) {
 	time += '';
@@ -33,12 +36,13 @@ var renderCurrentData  = function(data) {
 	let timeE = $('<p class="block">' + data.time + '</p>');
 	let tempE = $('<p class="block">' + data.temp + '&deg;</p>');
 	let windE = $('<p class="block">' + data.wind + 'mph</p>');
-	let iconE = fs.readFileSync('app/assets/weather/' + data.icon + '.svg', 'utf8');
-	iconE = $(iconE);
+	// let iconE = fs.readFileSync('app/assets/weather/' + data.icon + '.svg', 'utf8');
+	// let iconE = .load('../assets/weather/' + data.icon + '.svg');
+	// iconE = $(iconE);
 	let rainE = $('<p class="block">' + data.precip + '%</p>');
 
 	// head.append(divTemplate.clone().addClass('weather-main-time').append(timeE);
-	$('.weather-main-icon').empty().append(iconE);
+	$('.weather-main-icon').empty().load('/assets/weather/' + data.icon + '.svg');
 	$('.weather-main-stats').empty().append(tempE).append(windE).append(rainE);
 }
 
@@ -62,10 +66,10 @@ var renderForecastData = function(data) {
 		let rainE = $('<p class="block">' + data[i].rain + '%</p>');
 		let dayE = $('<p class="block">' + dayStrings[forecastDate.getDay()] + '</p>');
 
-		let iconE = fs.readFileSync('app/assets/weather/' + data[i].icon + '.svg', 'utf8');
-		iconE = $(iconE);
+		// let iconE = fs.readFileSync('app/assets/weather/' + data[i].icon + '.svg', 'utf8');
+		// iconE = $(iconE);
 
-		weather.append(divTemplate.clone().append(iconE));
+		weather.append(divTemplate.clone().load('/assets/weather/' + data[i].icon + '.svg'));
 		weather.append(divTemplate.clone().append(dayE));
 		weather.append(divTemplate.clone().append(highE).append(lowE));
 		weather.append(divTemplate.clone().append(windE).append(rainE));
@@ -167,6 +171,8 @@ var renderTime = function() {
 	timeE.append($('<p class="block">' + getTime() + '</p>'));
 }
 
+let weatherDisplay = $('.weather');
+let infoDisplays = [weatherDisplay];
 var displayOn = false;
 var toggleDisplay = function(turnOn) {
 	let weather = $('.weather');
@@ -181,156 +187,95 @@ var toggleDisplay = function(turnOn) {
 	}
 }
 
+var closeAll = function() {
+	for (let i = 0; i < infoDisplays.length; i++) {
+		infoDisplays[i].removeClass('visible');
+		infoDisplays[i].addClass('hidden');
+	}
+}
+
+var openWeather = function() {
+	closeAll();
+	displayOn = true;
+	weatherDisplay.removeClass('hidden');
+	weatherDisplay.addClass('visible');
+}
+
 renderTime();
 setInterval(renderTime, 1000);
 
 //300000 in 5 min
-getCurrentData();
 setInterval(getCurrentData, 300000);
 
-getForecastData();
 setInterval(getForecastData, 21600000); // Refresh every 6 hours
 
-// console.log('require-msr', MediaStreamRecorder);
-
-// console.log('\n\n-------\n\n');
-
-// var recorder = new MediaStreamRecorder({});
-// console.log('MediaStreamRecorder', recorder);
-
-// console.log('\n\n-------\n\n');
-
-// var multiStreamRecorder = new MediaStreamRecorder.MultiStreamRecorder({});
-// console.log('MultiStreamRecorder', multiStreamRecorder);
-
-// var mediaConstraints = {
-//     audio: true
-// };
-
-
-// function onMediaSuccess(stream) {
-//     var mediaRecorder = new MediaStreamRecorder(stream);
-//     mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
-//     mediaRecorder.ondataavailable = function (blob) {
-//         // POST/PUT "Blob" using FormData/XHR2
-//         var blobURL = URL.createObjectURL(blob);
-//         document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
-//         console.log(blobURL);
-//     };
-//     mediaRecorder.start(3000);
-// }
-
-// function onMediaError(e) {
-//     console.error('media error', e);
-// }
-
-// navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
-
-
-// [START speech_quickstart]
-// Imports the Google Cloud client library
-// const Sonus = require('sonus');
-// const speech = require('@google-cloud/speech')({
-// 	projectId: 'rpi-mirror-152523',
-//   	keyFilename: '../rpimirror-f7e39e43cd34.json'
-// });
-//
-// const hotwords = [{ file: '../resources/snowboy.umdl', hotword: 'snowboy' }];
-// const sonus = Sonus.init({ hotwords }, speech);
-//
-// Sonus.start(sonus);
-// sonus.on('hotword', (index, keyword) => console.log('You Spoke!'));
-// sonus.on('final-result', console.log);
-
-
-let startRecognition = function() {
-	recognition = new webkitSpeechRecognition();
-	// recognition.grammars = speechRecognitionList;
-	// recognition.continuous = true;
-
-	recognition.onstart = function(event) {
-		respond('I\'m listening...');
-		console.log('recording');
-	};
-	recognition.onresult = function(event) {
-		recognition.onend = null;
-
-		var text = "";
-		for (var i = event.resultIndex; i < event.results.length; ++i) {
-			text += event.results[i][0].transcript;
-		}
-		respond('You said: ' + text);
-		setTimeout(function() {
-			respond('I\'m listening...');
-		}, 3000);
-		stopRecognition();
-		console.log(text);
-		if (text.MC('what is weather')) {
-			let weather = $('.weather');
-			weather.removeClass('hidden');
-			weather.addClass('visible');
-		} else if (text.MC('(close clothes) weather')) {
-			let weather = $('.weather');
-			weather.removeClass('visible');
-			weather.addClass('hidden');
-		}
-	};
-	recognition.onend = function() {
-		// respond('I couldn\'t hear you. Can you repeat that?');
-		stopRecognition();
-		console.log('end');
-	};
-	recognition.onerror = function(error) {
-		console.log(error);
-	};
-	recognition.lang = "en-US";
-	recognition.start();
-}
-
-let stopRecognition = function() {
-	if (recognition) {
-		recognition.stop();
-		recognition = null;
-		startRecognition();
-	}
-}
-
-let switchRecognition = function() {
-	if (recognition) {
-		stopRecognition();
-	} else {
-		startRecognition();
-	}
-}
-
-let respond = function(message) {
-	$('.communication').empty().append($('<p></p>').text(message));
-}
-
-let recognition;
+// let recognition;
 // startRecognition();
 
-// // // The name of the audio file to transcribe
-// const fileName = '../resources/audio.raw';
+String.prototype.MC = function(commandStr) {
+	console.log(this);
+	let commands = / +(?=[^()]*(\(|$))/;
+	let chunks = commandStr.split(commands);
+	if (this.split(commands).length < chunks.length)
+		return false;
+	console.log('chunks:');
+	console.log(chunks);
+	for (let i = 0; i < chunks.length; i++) {
+		let chunk = chunks[i].trim();
+		if (chunk != '') {
+			let bits;
+			if (chunk.indexOf(' ') != -1) {
+				bits = chunk.split(/\s+/);
+				bits[0] = bits[0].slice(1);
+				bits[bits.length - 1] = bits[bits.length - 1].slice(0, bits[bits.length - 1].length - 1);
 
-// // // The audio file's encoding and sample rate
-// const options = {
-//   encoding: 'LINEAR16',
-//   sampleRate: 16000
-// };
+			} else {
+				bits = [chunk];
+			}
+			console.log('bits:');
+			console.log(bits);
+			let found = false;
+			for (let j = 0; j < bits.length; j++) {
+				if (this.indexOf(bits[j]) !== -1) {
+					found = true;
+					console.log('found ' + bits[j]);
+					console.log(this.indexOf(bits[j]));
+				}
+			}
+			if (!found) {
+				console.log('returned false');
+				return false;
+			}
+		}
+	}
+	console.log('returned true');
+	return true;
+}
 
-// // Detects speech in the audio file
-// speech.recognize(fileName, options)
-//   .then((results) => {
-//     const transcription = results[0];
-//     console.log(`Transcription: ${transcription}`);
-//   });
-// [END speech_quickstart]
+
 
 document.addEventListener('keydown', function(e) {
 	console.log(e);
 	if (e.key == 't') {
-		// ipcRenderer.send('asynchronous-message', 'test');
 		toggleDisplay();
 	}
+});
+openWeather();
+
+// ##############################################
+
+console.log(artyom);
+
+artyom.on(["Weather Display", "Whether Display"]).then(function(i){
+    console.log("Triggered");
+	toggleDisplay();
+});
+
+artyom.initialize({
+    lang:"en-US",
+	continuous: true,
+    debug:true, // Show what recognizes in the Console
+    listen:true, // Start listening after this
+    speed:0.9, // Talk a little bit slow
+    mode:"normal" // This parameter is not required as it will be normal by default
 });

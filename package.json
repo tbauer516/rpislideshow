@@ -4,24 +4,24 @@
   "description": "An application to turn an raspberry pi  into a smart mirror",
   "author": "Tyler Bauer <tcbauer516@gmail.com>",
   "scripts": {
-    "start": "electron ."
+    "start": "sh kiosk.sh & node start.js",
+    "test": "sh test.sh & node start.js",
+    "serve": "node start.js",
+    "postinstall": "cp node_modules/artyom.js/build-vanilla/artyom.min.js app/lib/artyom.min.js"
   },
-  "//": "sudo npm install -g node-gyp; sudo apt-get install sox libsox-fmt-all;",
-  "main": "main.js",
   "keywords": [
     "raspberry",
     "pi",
     "mirror"
   ],
   "dependencies": {
+    "express": "latest",
+    "compression": "latest",
     "fs": "latest",
-    "path": "latest",
-    "url": "latest"
+    "artyom.js": "latest"
   },
-  "//": "@google-cloud/speech: latest",
-  "//": "Sonus: latest",
   "devDependencies": {
-    "electron": "latest"
+
   },
   "os" : [ "!win32" ],
   "preferGlobal": true,
