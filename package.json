@@ -1,28 +1,18 @@
 {
-  "name": "RPI-Mirror",
+  "name": "RPI-Slideshow",
   "version": "0.0.1",
-  "description": "An application to turn an raspberry pi  into a smart mirror",
+  "description": "An application to turn an raspberry pi into a picture frame with weather display",
   "author": "Tyler Bauer <tcbauer516@gmail.com>",
   "scripts": {
-    "start": "sh kiosk.sh & node start.js",
-    "test": "sh test.sh & node start.js",
-    "serve": "node start.js",
-    "postinstall": "cp node_modules/artyom.js/build-vanilla/artyom.min.js app/lib/artyom.min.js"
+    "start": "sh kiosk.sh & node express/server.js",
+    "test": "sh test.sh & node express/server.js",
+    "serve": "node express/server.js"
   },
   "keywords": [
     "raspberry",
     "pi",
-    "mirror"
+    "slideshow"
   ],
-  "dependencies": {
-    "express": "latest",
-    "compression": "latest",
-    "fs": "latest",
-    "artyom.js": "latest"
-  },
-  "devDependencies": {
-
-  },
   "os" : [ "!win32" ],
   "preferGlobal": true,
   "private": true,

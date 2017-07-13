@@ -1,0 +1,33 @@
+html {
+	font-size: 16px;
+}
+
+body {
+	background-color: #000000;
+	color: #FFFFFF;
+}
+
+div.App {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	align-content: flex-start
+}
+
+div.picture, div.weather {
+	border: 1px solid white;
+	margin: 5px;
+	height: calc(100vh - 10px);
+	box-sizing: border-box;
+}
+
+div.picture {
+	flex: 1 1 auto;
+}
+
+div.weather {
+	flex: 0 1 200px;
+	font-size: .7em;
+}

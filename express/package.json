@@ -1,0 +1,24 @@
+{
+  "name": "slideshow",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "compression": "^1.7.0",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^20.1.0",
+    "passport": "^0.3.2",
+    "passport-google-oauth": "^1.0.0",
+    "request": "^2.81.0",
+    "session-file-store": "^1.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "ENVIRONMENT=development nodemon -e js,html,css server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
