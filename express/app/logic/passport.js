@@ -2,15 +2,8 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const fs = require('fs');
 
-const environments = {
-	development: 0,
-	production: 0
-};
-
 const userStorePath = './app/userStore/';
 const userStoreFile = 'users.json';
-
-let environment = process.env.ENVIRONMENT || 'production';
 
 const users = {};
 const authUsers = JSON.parse(fs.readFileSync('./app/config/auth-users.json', 'utf8')).authorized;
@@ -54,7 +47,7 @@ let getStrategy = (secret) => {
 		{
 			clientID: secret.web.client_id,
 			clientSecret: secret.web.client_secret,
-			callbackURL: secret.web.redirect_uris[environments[environment]]
+			callbackURL: secret.web.redirect_uris[0]
 		},
 		verify
 	);

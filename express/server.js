@@ -1,6 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-// const fs = require('fs');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 const app = express();
@@ -18,22 +17,15 @@ app.use( bodyParser.urlencoded({
 	extended: true
 }));
 
-app.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "http://127.0.0.1");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	res.header("Access-Control-Allow-Credentials", true);
-	next();
-});
-
 if (app.get('environment') === 'production')
-	app.use('/', express.static(__dirname + '/../react/build', { maxAge: 0 }));
+	app.use('/', express.static(__dirname + '/../react/build', { maxAge: oneDay }));
 
 app.use(session({
 	secret: 'password',
 	name: 'rpislideshow',
 	resave: true,
 	saveUninitialized: false,
-	maxAge: 600000,
+	maxAge: Number.MAX_SAFE_INTEGER,
 	cookie: { httpOnly: false, secure: false },
 	store: new FileStore({ path: './app/sessStore/' })
 }));

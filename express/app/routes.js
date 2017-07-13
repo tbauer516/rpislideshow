@@ -42,7 +42,7 @@ module.exports = (app) => {
 
 	app.get('/logout', (req, res) => {
 		req.logout();
-		res.redirect('http://127.0.0.1:3000');
+		res.redirect('http://localhost:3000');
 	});
 
 	
