@@ -20,6 +20,8 @@ app.use( bodyParser.urlencoded({
 if (app.get('environment') === 'production')
 	app.use('/', express.static(__dirname + '/../react/build', { maxAge: oneDay }));
 
+app.use('/images', express.static(__dirname + '/app/media', {maxAge: oneDay }));
+
 app.use(session({
 	secret: 'password',
 	name: 'rpislideshow',

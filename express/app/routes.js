@@ -1,7 +1,4 @@
 const root = './app/';
-const express = require('express');
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
 const fs = require('fs');
 const passport = require('./logic/passport.js');
 const darknet = require('./logic/darknet.js');
@@ -32,12 +29,10 @@ module.exports = (app) => {
 	});
 
 	app.get('/api/photo', passport.isLoggedIn, (req, res) => {
-		let photoPath = photos.getNextLocalImage();
+		let photo = photos.getNextLocalImage();
 	
-		if (photoPath) {
-			res.sendFile(photoPath, { root: './'}, (err) => {
-				if (err) console.log(err);
-			});
+		if (photo) {
+			res.send(photo);
 		} else {
 			res.status(403).send('no files available');
 		}
