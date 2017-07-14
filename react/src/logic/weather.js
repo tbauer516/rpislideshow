@@ -1,11 +1,11 @@
-const request = new Request({
-	headers: new Headers({
+const request = {
+	headers: {
 		'Content-Type': 'application/json'
-	}),
-	method: 'GET',
+	},
+	method: 'get',
 	credentials: 'include',
 	mode: 'cors'
-});
+};
 
 const getWeather = (type) => {
 	return new Promise((resolve, reject) => {

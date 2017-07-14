@@ -6,7 +6,7 @@ const app = express();
 const FileStore = require('session-file-store')(session);
 
 const oneDay = 86400000;
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 let environment = process.env.ENVIRONMENT || 'production';
 app.set('environment', environment);
@@ -25,8 +25,9 @@ app.use(session({
 	name: 'rpislideshow',
 	resave: true,
 	saveUninitialized: false,
+	// maxAge: 60000,
 	maxAge: Number.MAX_SAFE_INTEGER,
-	cookie: { httpOnly: false, secure: false },
+	cookie: { httpOnly: false, secure: false, maxAge: Number.MAX_SAFE_INTEGER },
 	store: new FileStore({ path: './app/sessStore/' })
 }));
 

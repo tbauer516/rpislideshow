@@ -80,7 +80,8 @@ module.exports.isLoggedIn = (req, res, next) => {
 			return next();
 	}
 
-	return res.redirect('/error?message=' + encodeURIComponent('you are not logged in'));
+	// return res.redirect('/error?message=' + encodeURIComponent('you are not logged in'));
+	return res.redirect('/login');
 };
 
 module.exports.initialize = () => {
@@ -94,7 +95,7 @@ module.exports.session = () => {
 module.exports.auth = () => {
 	let message = 'Login attempt failed.';
 	return passport.authenticate('google', {
-		access_type: 'offline',
+		// access_type: 'offline',
 		scope: [
 			'https://www.googleapis.com/auth/plus.login',
 			'https://www.googleapis.com/auth/drive'
