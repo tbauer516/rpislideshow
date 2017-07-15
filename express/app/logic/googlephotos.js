@@ -1,7 +1,8 @@
 const fs = require('fs');
 const google = require('googleapis');
 const googleAuth = require('google-auth-library');
-const request = require('request');
+const gm = require('gm').subClass({imageMagick: true});
+const passport = require('./passport.js');
 
 const service = google.drive('v3');
 const auth = new googleAuth();
@@ -40,17 +41,16 @@ const syncImages = module.exports.syncImages = (user) => {
 		for (let i = localImages.length - 1; i >= 0; i--) {
 			let matched = false;
 			for (let j = driveImages.length - 1; j >= 0; j--) {
-				if (localImages[i].name === driveImages[j].name) {
+				if (localImages[i] === driveImages[j].name) {
 					driveImages.splice(j, 1);
 					matched = true;
 				}
 			}
 			if (!matched) {
-				localDelete.push(localImages[i].name);
+				localDelete.push(localImages[i]);
 			}
 		}
 
-		console.log(localDelete);
 		deleteImageBatch(localDelete);
 		
 		downloadImageBatch(driveImages);
@@ -59,12 +59,24 @@ const syncImages = module.exports.syncImages = (user) => {
 };
 
 const getAllDriveImages = (user) => {
+	return tryGetAllDriveImages(user)
+	.catch(err => {
+		return getAllDriveImages(user);
+	});
+};
+
+const tryGetAllDriveImages = (user) => {
 	return new Promise((resolve, reject) => {
 		oauth2Client.credentials.access_token = user.accessToken;
+		oauth2Client.credentials.refresh_token = user.refreshToken;
 		driveOptions.auth = oauth2Client;
 		service.files.list(driveOptions , (err, response) => {
 			if (err) {
-				return reject(err);
+				return refreshTokens(user, oauth2Client)
+				.then(() => {
+					console.log('refreshed tokens');
+					reject(err);
+				});
 			}
 			if (!response || !response.files || response.files[0].name === lastModified)
 				return resolve([]);
@@ -79,6 +91,7 @@ const getAllDriveImages = (user) => {
 						images.push(file);
 				}
 			}
+			console.log('resolved');
 			return resolve(images);
 		});
 	});
@@ -87,7 +100,7 @@ const getAllDriveImages = (user) => {
 const getNextLocalImage = module.exports.getNextLocalImage = () => {
 	const imagesLength = localImages.length;
 	if (imagesLength == 0)
-		return { name: "", rot: 0 };
+		return '';
 
 	imageIndex++;
 	if (imageIndex >= imagesLength) {
@@ -97,39 +110,19 @@ const getNextLocalImage = module.exports.getNextLocalImage = () => {
 	return localImages[imageIndex];
 };
 
-
-
-// const getAllLocalImages = () => {
-// 	return new Promise((resolve, reject) => {
-// 		if (!fs.existsSync(mediaDir))
-// 			fs.mkdirSync(mediaDir);
-
-// 		fs.readdir(mediaDir, (err, files) => {
-// 			if (err) reject(err);
-// 			resolve(files);
-// 		});
-// 	})
-// 	.then(images => {
-// 		localImages = images;
-// 	});
-// };
-
 const restoreImageArray = () => {
-	if (!fs.existsSync(mediaDataDir))
-		fs.mkdirSync(mediaDataDir);
+	return new Promise((resolve, reject) => {
+		if (!fs.existsSync(mediaDir))
+			fs.mkdirSync(mediaDir);
 
-	if (!fs.existsSync(mediaDataDir + mediaDataName))
-		return;
-
-	const images = fs.readFileSync(mediaDataDir + mediaDataName);
-	localImages = JSON.parse(images);
-};
-
-const storeLocalImageData = () => {
-	if (!fs.existsSync(mediaDataDir))
-		fs.mkdirSync(mediaDataDir);
-
-	fs.writeFileSync(mediaDataDir + mediaDataName, JSON.stringify(localImages));
+		fs.readdir(mediaDir, (err, files) => {
+			if (err) reject(err);
+			resolve(files);
+		});
+	})
+	.then(images => {
+		localImages = images;
+	});
 };
 
 const downloadImageBatch = (files) => {
@@ -140,12 +133,6 @@ const downloadImageBatch = (files) => {
 			downloads.push(downloadImage(files[i], false));
 		}
 		return downloads;
-	})
-	.then(downloads => {
-		Promise.all(downloads)
-		.then(() => {
-			storeLocalImageData();
-		});
 	});
 };
 
@@ -155,29 +142,29 @@ const downloadImage = (file, update = true) => {
 			fs.mkdirSync(mediaDir);
 
 		if (fs.existsSync(mediaDir + file.name))
-			resolve();
+			return resolve();
 
-		let dest = fs.createWriteStream(mediaDir + file.name);
 		let temp = service.files.get({
 			auth: oauth2Client,
 			fileId: file.id,
 			alt: 'media'
 		})
 		.on('end', function() {
-			resolve(file);
+			return resolve(file);
 		})
 		.on('error', function(err) {
-			reject(err);
-		})
-		.pipe(dest);
-		// console.log(temp);
+			return reject(err);
+		});
+
+		gm(temp, file.name)
+		.rotate('white', 90 * file.imageMediaMetadata.rotation)
+		.write(mediaDir + file.name, (err) => {
+			if (err) console.log('photo write error: ' + err);
+		});
 	})
 	.then(file => {
-		localImages.push({ name: file.name, rot: file.imageMediaMetadata.rotation });
+		localImages.push(file.name);
 		lastModified = file.name;
-
-		if (update)
-			storeLocalImageData();
 	});
 };
 
@@ -185,7 +172,6 @@ const deleteImageBatch = (names) => {
 	for (let i = names.length - 1; i >= 0; i--) {
 		deleteImage(names[i], false);
 	}
-	storeLocalImageData();
 };
 
 const deleteImageByIndex = (index, update = true) => {
@@ -194,9 +180,6 @@ const deleteImageByIndex = (index, update = true) => {
 
 	fs.unlinkSync(mediaDir + localImages[index].name);
 	removeByIndex(localImages, index);
-
-	if (update)
-		storeLocalImageData();
 };
 
 const deleteImage = (name, update = true) => {
@@ -206,9 +189,6 @@ const deleteImage = (name, update = true) => {
 
 	fs.unlinkSync(mediaDir + name);
 	removeByIndex(localImages, index);
-	
-	if (update)
-		storeLocalImageData();
 };
 
 // Durstenfeld shuffle

@@ -7,13 +7,13 @@ const request = {
 	mode: 'cors'
 };
 
-const getPhoto = () => {
+export const getNewPhoto = () => {
 	return fetch('/api/photo', request)
 	.then(response => {
-		return response.json();
+		return response.text();
 	})
 	.then(data => {
-		data.name = window.location.origin + '/images/' + data.name;
+		data = 'http://localhost:3001/images/' + data;
 		return data;
 	})
 	.catch(err => {
@@ -21,6 +21,12 @@ const getPhoto = () => {
 	});
 };
 
-export const getNewPhoto = () => {
-	return getPhoto();
-}
+export const syncDrive = () => {
+	return fetch('/api/photos', request)
+	.then(response => {
+		return response.text();
+	})
+	.catch(err => {
+		console.log(err);
+	});
+};

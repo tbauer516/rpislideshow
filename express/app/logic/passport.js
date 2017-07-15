@@ -8,7 +8,7 @@ const userStoreFile = 'users.json';
 const users = {};
 const authUsers = JSON.parse(fs.readFileSync('./app/config/auth-users.json', 'utf8')).authorized;
 
-let storeUser = (id, user) => {
+const storeUser = (id, user) => {
 	if (!fs.existsSync(userStorePath))
 		fs.mkdirSync(userStorePath);
 
@@ -19,18 +19,36 @@ let storeUser = (id, user) => {
 	fs.writeFileSync(userStorePath + userStoreFile, JSON.stringify(userData));
 }
 
-let getUser = (id) => {
+const getUser = (id) => {
 	if (fs.existsSync(userStorePath + userStoreFile))
 		return JSON.parse(fs.readFileSync(userStorePath + userStoreFile))[id];
 	return {};
 }
 
-let getSecret = () => {
-	let secret = fs.readFileSync('./app/config/client-secret.json', 'utf8');
+const getSecret = () => {
+	const secret = fs.readFileSync('./app/config/client-secret.json', 'utf8');
 	return JSON.parse(secret);
 };
 
-let verify = (accessToken, refreshToken, profile, done) => {
+const refreshTokens = (user, oauth2Client) => {
+	return new Promise((resolve, reject) => {
+		oauth2Client.refreshAccessToken((err, tokens) => {
+			if (err) return reject(err);
+			return resolve(tokens);
+		});
+	})
+	.then(tokens => {
+		let userData = getUser(user.id);
+		userData.accessToken = tokens.access_token;
+		userData.refreshToken = tokens.refresh_token;
+		oauth2Client.credentials.access_token = tokens.access_token;
+		oauth2Client.credentials.refresh_token = tokens.refresh_token;
+		storeUser(user.id, userData);
+	});
+};
+
+const verify = (accessToken, refreshToken, profile, done) => {
+	console.log(refreshToken);
 	if (profile && isUserAuth(profile.id)) {
 		profile.accessToken = accessToken;
 		profile.refreshToken = refreshToken;
@@ -39,7 +57,7 @@ let verify = (accessToken, refreshToken, profile, done) => {
 	return done(null, false);
 };
 
-let getStrategy = (secret) => {
+const getStrategy = (secret) => {
 	if (!secret)
 		throw('Secret was not initialized');
 
@@ -65,7 +83,7 @@ passport.deserializeUser((id, done) => {
 
 passport.use(getStrategy(getSecret()));
 
-let isUserAuth = module.exports.isUserAuth = (userID) => {
+const isUserAuth = module.exports.isUserAuth = (userID) => {
 	for (let i = 0; i < authUsers.length; i++) {
 		if (userID === authUsers[i])
 			return true;
@@ -95,7 +113,8 @@ module.exports.session = () => {
 module.exports.auth = () => {
 	let message = 'Login attempt failed.';
 	return passport.authenticate('google', {
-		// access_type: 'offline',
+		accessType: 'offline',
+		prompt: 'consent',
 		scope: [
 			'https://www.googleapis.com/auth/plus.login',
 			'https://www.googleapis.com/auth/drive'
