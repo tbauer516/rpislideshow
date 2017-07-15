@@ -61,7 +61,13 @@ const syncImages = module.exports.syncImages = (user) => {
 const getAllDriveImages = (user) => {
 	return tryGetAllDriveImages(user)
 	.catch(err => {
-		return getAllDriveImages(user);
+		return passport.refreshTokens(user, oauth2Client)
+		.then(() => {
+			console.log('refreshed tokens');
+		})
+		.then(() => {
+			return tryGetAllDriveImages(user);
+		});
 	});
 };
 
@@ -72,11 +78,7 @@ const tryGetAllDriveImages = (user) => {
 		driveOptions.auth = oauth2Client;
 		service.files.list(driveOptions , (err, response) => {
 			if (err) {
-				return refreshTokens(user, oauth2Client)
-				.then(() => {
-					console.log('refreshed tokens');
-					reject(err);
-				});
+				return reject(err);
 			}
 			if (!response || !response.files || response.files[0].name === lastModified)
 				return resolve([]);
@@ -126,14 +128,11 @@ const restoreImageArray = () => {
 };
 
 const downloadImageBatch = (files) => {
-	Promise.resolve()
-	.then(() => {
-		let downloads = [];
-		for (let i = 0; i < files.length; i++) {
-			downloads.push(downloadImage(files[i], false));
-		}
-		return downloads;
-	});
+	let prom = Promise.resolve();
+	for (let i = 0; i < files.length; i++) {
+		prom = prom.then(() => { return downloadImage(files[i], false) });
+	}
+	return prom;
 };
 
 const downloadImage = (file, update = true) => {

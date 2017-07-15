@@ -30,7 +30,7 @@ const getSecret = () => {
 	return JSON.parse(secret);
 };
 
-const refreshTokens = (user, oauth2Client) => {
+module.exports.refreshTokens = (user, oauth2Client) => {
 	return new Promise((resolve, reject) => {
 		oauth2Client.refreshAccessToken((err, tokens) => {
 			if (err) return reject(err);
