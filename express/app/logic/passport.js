@@ -2,7 +2,6 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const fs = require('fs');
 const secret = require('../config/client-secret.json');
-const authUsers = require('../config/auth-users.json').authorized;
 
 const userStorePath = './app/userStore/';
 const userStoreFile = 'users.json';
@@ -27,7 +26,7 @@ const getUser = (id) => {
 }
 
 const verify = (accessToken, refreshToken, profile, done) => {
-	if (profile && isUserAuth(profile.id)) {
+	if (profile) {
 		profile.accessToken = accessToken;
 		profile.refreshToken = refreshToken;
 		return done(null, profile);
@@ -47,14 +46,6 @@ const getStrategy = (secret) => {
 		},
 		verify
 	);
-};
-
-const isUserAuth = module.exports.isUserAuth = (userID) => {
-	for (let i = 0; i < authUsers.length; i++) {
-		if (userID === authUsers[i])
-			return true;
-	}
-	return false;
 };
 
 module.exports.refreshTokens = (user, oauth2Client) => {
@@ -77,8 +68,7 @@ module.exports.refreshTokens = (user, oauth2Client) => {
 module.exports.isLoggedIn = (req, res, next) => {
 	if (req.isAuthenticated()) {
 		let userID = req.user.id;
-		if (isUserAuth(userID))
-			return next();
+		return next();
 	}
 
 	// return res.redirect('/error?message=' + encodeURIComponent('you are not logged in'));
