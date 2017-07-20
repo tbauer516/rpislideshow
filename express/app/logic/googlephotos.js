@@ -2,6 +2,7 @@ const fs = require('fs');
 const google = require('googleapis');
 const googleAuth = require('google-auth-library');
 const gm = require('gm').subClass({imageMagick: true});
+const secret = require('../config/client-secret.json');
 const passport = require('./passport.js');
 
 const service = google.drive('v3');
@@ -17,15 +18,10 @@ const mimeTypes = {
 
 const driveOptions = {
 	pageSize: 1000,
-	fields: "files(id, kind, mimeType, name, parents, webContentLink, imageMediaMetadata(rotation)), kind",
+	fields: "files(id, kind, mimeType, name, parents, imageMediaMetadata(rotation)), kind",
 	corpora: 'user',
 	spaces: 'drive',
 	orderBy: 'modifiedTime desc'
-};
-
-const getSecret = () => {
-	let secret = fs.readFileSync('./app/config/client-secret.json', 'utf8');
-	return JSON.parse(secret);
 };
 
 const syncImages = module.exports.syncImages = (user) => {
@@ -213,7 +209,6 @@ const indexOf = (array, imageName) => {
 	return -1;
 };
 
-const secret = getSecret();
 let oauth2Client = new auth.OAuth2(
 	secret.web.client_id,
 	secret.web.client_secret,

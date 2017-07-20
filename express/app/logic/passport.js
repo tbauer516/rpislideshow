@@ -1,12 +1,13 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const fs = require('fs');
+const secret = require('../config/client-secret.json');
+const authUsers = require('../config/auth-users.json').authorized;
 
 const userStorePath = './app/userStore/';
 const userStoreFile = 'users.json';
 
 const users = {};
-const authUsers = JSON.parse(fs.readFileSync('./app/config/auth-users.json', 'utf8')).authorized;
 
 const storeUser = (id, user) => {
 	if (!fs.existsSync(userStorePath))
@@ -24,28 +25,6 @@ const getUser = (id) => {
 		return JSON.parse(fs.readFileSync(userStorePath + userStoreFile))[id];
 	return {};
 }
-
-const getSecret = () => {
-	const secret = fs.readFileSync('./app/config/client-secret.json', 'utf8');
-	return JSON.parse(secret);
-};
-
-module.exports.refreshTokens = (user, oauth2Client) => {
-	return new Promise((resolve, reject) => {
-		oauth2Client.refreshAccessToken((err, tokens) => {
-			if (err) return reject(err);
-			return resolve(tokens);
-		});
-	})
-	.then(tokens => {
-		let userData = getUser(user.id);
-		userData.accessToken = tokens.access_token;
-		userData.refreshToken = tokens.refresh_token;
-		oauth2Client.credentials.access_token = tokens.access_token;
-		oauth2Client.credentials.refresh_token = tokens.refresh_token;
-		storeUser(user.id, userData);
-	});
-};
 
 const verify = (accessToken, refreshToken, profile, done) => {
 	if (profile && isUserAuth(profile.id)) {
@@ -70,24 +49,29 @@ const getStrategy = (secret) => {
 	);
 };
 
-passport.serializeUser((user, done) => {
-	storeUser(user.id, user);
-	done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-	let user = getUser(id);
-	done(null, user);
-});
-
-passport.use(getStrategy(getSecret()));
-
 const isUserAuth = module.exports.isUserAuth = (userID) => {
 	for (let i = 0; i < authUsers.length; i++) {
 		if (userID === authUsers[i])
 			return true;
 	}
 	return false;
+};
+
+module.exports.refreshTokens = (user, oauth2Client) => {
+	return new Promise((resolve, reject) => {
+		oauth2Client.refreshAccessToken((err, tokens) => {
+			if (err) return reject(err);
+			return resolve(tokens);
+		});
+	})
+	.then(tokens => {
+		let userData = getUser(user.id);
+		userData.accessToken = tokens.access_token;
+		userData.refreshToken = tokens.refresh_token;
+		oauth2Client.credentials.access_token = tokens.access_token;
+		oauth2Client.credentials.refresh_token = tokens.refresh_token;
+		storeUser(user.id, userData);
+	});
 };
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -126,3 +110,15 @@ module.exports.authCallback = () => {
 	let message = 'Login attempt failed.';
 	return passport.authenticate('google', { failureRedirect: '/error?message=' + encodeURIComponent(message) });
 };
+
+passport.serializeUser((user, done) => {
+	storeUser(user.id, user);
+	done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+	let user = getUser(id);
+	done(null, user);
+});
+
+passport.use(getStrategy(secret));
