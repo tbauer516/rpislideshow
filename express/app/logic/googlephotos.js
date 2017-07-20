@@ -32,7 +32,7 @@ const syncImages = module.exports.syncImages = (user) => {
 	if (!fs.existsSync(mediaDir))
 			fs.mkdirSync(mediaDir);
 
-	getAllDriveImages(user)
+	return getAllDriveImages(user)
 	.then(driveImages => {
 		if (driveImages.length === 0)
 			return;
@@ -51,9 +51,13 @@ const syncImages = module.exports.syncImages = (user) => {
 			}
 		}
 
-		deleteImageBatch(localDelete);
-		
-		downloadImageBatch(driveImages);
+		return Promise.resolve()
+		.then(() => {
+			return deleteImageBatch(localDelete);
+		})
+		.then(() => {
+			return downloadImageBatch(driveImages);
+		});
 	})
 	.catch(err => { console.log(err); });
 };
@@ -93,7 +97,7 @@ const tryGetAllDriveImages = (user) => {
 						images.push(file);
 				}
 			}
-			console.log('resolved');
+			// console.log('resolved');
 			return resolve(images);
 		});
 	});
@@ -130,12 +134,12 @@ const restoreImageArray = () => {
 const downloadImageBatch = (files) => {
 	let prom = Promise.resolve();
 	for (let i = 0; i < files.length; i++) {
-		prom = prom.then(() => { return downloadImage(files[i], false) });
+		prom = prom.then(() => { return downloadImage(files[i]); });
 	}
 	return prom;
 };
 
-const downloadImage = (file, update = true) => {
+const downloadImage = (file) => {
 	return new Promise((resolve, reject) => {
 		if (!fs.existsSync(mediaDir))
 			fs.mkdirSync(mediaDir);
@@ -168,26 +172,26 @@ const downloadImage = (file, update = true) => {
 };
 
 const deleteImageBatch = (names) => {
+	let prom = Promise.resolve();
 	for (let i = names.length - 1; i >= 0; i--) {
-		deleteImage(names[i], false);
+		prom = prom.then(() => { return deleteImage(names[i]); });
 	}
+	return prom;
 };
 
-const deleteImageByIndex = (index, update = true) => {
-	if (index < 0 || index >= localImages.length)
-		return;
+const deleteImage = (name) => {
+	return new Promise((resolve, reject) => {
+		let index = indexOf(localImages, name);
+		if (index === -1)
+			return resolve();
 
-	fs.unlinkSync(mediaDir + localImages[index].name);
-	removeByIndex(localImages, index);
-};
-
-const deleteImage = (name, update = true) => {
-	let index = indexOf(localImages, name);
-	if (index === -1)
-		return;
-
-	fs.unlinkSync(mediaDir + name);
-	removeByIndex(localImages, index);
+		fs.unlink(mediaDir + name, (err) => {
+			if (err) return reject(err);
+			
+			localImages.splice(index, 1);
+			return resolve();
+		});
+	});
 };
 
 // Durstenfeld shuffle
@@ -201,20 +205,9 @@ const shuffle = (array) => {
 	}
 };
 
-const removeByName = (array, imageName) => {
-	for (let i = array.length - 1; i >= 0; i--) {
-		if (array[i].name === imageName)
-			array.splice(i, 1);
-	}
-};
-
-const removeByIndex = (array, index) => {
-	array.splice(index, 1);
-}
-
 const indexOf = (array, imageName) => {
 	for (let i = array.length - 1; i >= 0; i--) {
-		if (array[i].name === imageName)
+		if (array[i] === imageName)
 			return i;
 	}
 	return -1;

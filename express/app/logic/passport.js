@@ -48,7 +48,6 @@ module.exports.refreshTokens = (user, oauth2Client) => {
 };
 
 const verify = (accessToken, refreshToken, profile, done) => {
-	console.log(refreshToken);
 	if (profile && isUserAuth(profile.id)) {
 		profile.accessToken = accessToken;
 		profile.refreshToken = refreshToken;

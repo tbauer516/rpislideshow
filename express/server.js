@@ -4,6 +4,7 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const app = express();
 const FileStore = require('session-file-store')(session);
+const passport = require('./app/logic/passport.js');
 
 const oneDay = 86400000;
 const port = 3001;
@@ -17,10 +18,7 @@ app.use( bodyParser.urlencoded({
 	extended: true
 }));
 
-if (app.get('environment') === 'production')
-	app.use('/', express.static(__dirname + '/../react/build', { maxAge: oneDay }));
 
-app.use('/images', express.static(__dirname + '/app/media', {maxAge: oneDay }));
 
 app.use(session({
 	secret: 'password',

@@ -1,8 +1,11 @@
 const root = './app/';
 const fs = require('fs');
+const express = require('express');
 const passport = require('./logic/passport.js');
 const darknet = require('./logic/darknet.js');
 const photos = require('./logic/googlephotos.js');
+
+const oneDay = 86400000;
 
 module.exports = (app) => {
 
@@ -11,7 +14,7 @@ module.exports = (app) => {
 
 	let env = app.get('environment');
 
-	app.get('/api/weather', passport.isLoggedIn, (req, res) => {
+	app.get('/api/weather', (req, res) => {
 		let type = req.query.type;
 		if (!type)
 			res.redirect('/error');
@@ -23,12 +26,15 @@ module.exports = (app) => {
 		
 	});
 
-	app.get('/api/photos', passport.isLoggedIn, (req, res) => {
-		photos.syncImages(req.user);
-		res.end();
+	app.get('/api/photos', (req, res) => {
+		console.log('request to sync drive received');
+		photos.syncImages(req.user)
+		.then(() => {
+			res.end();
+		});
 	});
 
-	app.get('/api/photo', passport.isLoggedIn, (req, res) => {
+	app.get('/api/photo', (req, res) => {
 		let photo = photos.getNextLocalImage();
 	
 		if (photo) {
@@ -57,6 +63,10 @@ module.exports = (app) => {
 		res.redirect('/login');
 	});
 
+	if (app.get('environment') === 'production')
+		app.use('/', passport.isLoggedIn, express.static(__dirname + '/../../react/build', { maxAge: oneDay, redirect: false }));
+
+	app.use('/images', express.static(__dirname + '/media', {maxAge: oneDay }));
 	
 	// ============================================
 	// 404 in case a path is wrong ================
