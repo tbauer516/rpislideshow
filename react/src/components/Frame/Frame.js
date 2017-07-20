@@ -8,15 +8,11 @@ constructor(props) {
 	this.state = {
 		img: ''
 	};
+	this.lastSync = 0;
 }
 
 componentDidMount() {
 	this.update();
-	this.sync();
-	this.syncID = setInterval(
-		() => { this.sync() },
-		86400000 // 24 hours
-	);
 	this.updateID = setInterval(
 		() => { this.update() },
 		300000 // 5 mins
@@ -24,16 +20,19 @@ componentDidMount() {
 }
 
 componentWillUnmount() {
-	clearInterval(this.syncID);
 	clearInterval(this.updateID);
 }
 
-sync() {
-	photos.syncDrive();
-}
-
 update() {
-	photos.getNewPhoto()
+	let time = new Date().getTime();
+	let prom = Promise.resolve();
+	if (time - this.lastSync > 86400000) { // 24 hours
+		prom = photos.syncDrive();
+		this.lastSync = time;
+	}
+
+	prom
+	.then(photos.getNewPhoto)
 	.then(data => {
 		console.log(data);
 		this.setState({

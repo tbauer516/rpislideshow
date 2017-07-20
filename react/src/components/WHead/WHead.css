@@ -1,35 +1,37 @@
 div.WHead {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: flex-start;
-    align-items: flex-start;
-    height: calc( (100vh - 10px) / 6);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: flex-start;
+	align-items: flex-start;
+	height: calc( (100vh - 10px) / 6);
 }
 
 div.WHead > div:nth-child(1) {
-    flex: 1 1 100%;
-    font-size: 3em;
-    text-align: center;
+	flex: 1 1 100%;
+	font-size: 3em;
+	text-align: center;
 }
 
 div.WHead > div:nth-child(2), div.Whead > div:nth-child(3) {
-    flex: 0 0 50%;
-    text-align: center;
+	flex: 0 0 50%;
+	text-align: center;
 }
 
 div.WHead > div:nth-child(2) svg {
-    width: 5em;
-    height: 5em;
+	width: 5em;
+	height: 5em;
 }
 
 div.WHead > div:nth-child(3) {
-    text-align: left;
-    font-size: 1.5em;
+	text-align: left;
+	font-size: 1.5em;
 }
 
 div.WHead > hr {
-    flex: 1 1 100%;
-    max-width: 90%;
+	border-style: solid;
+	border-width: 2px 0 0 0;
+	flex: 1 1 100%;
+	max-width: 90%;
 }

@@ -16,7 +16,7 @@ componentDidMount() {
 	this.timerID = setInterval(
 		() => { this.update() },
 		21600000 // 6 hours
-    );
+	);
 }
 
 componentWillUnmount() {
@@ -37,17 +37,15 @@ return (
 	<div className="WBody">
 		{this.state.days.map((day, i) => {
 			return (
-				<div>
-					<div>
-						<Icon name={day.icon} />
+				<div className="row">
+					<div className="column">
+						<div className="icon"><Icon name={day.icon} /></div>
+						<div className="day">{day.day}</div>
 					</div>
-					<div>
+					<div className="column">
 						<div>{day.max}&deg; F</div>
-						<div>{day.min}&deg; F</div>
-					</div>
-					<div>{day.day}</div>
-					<div>
 						<div>{day.wind} MPH</div>
+						<div>{day.min}&deg; F</div>
 						<div>{day.rain}%</div>
 					</div>
 					{this.state.days.length - 1 > i &&
@@ -55,7 +53,7 @@ return (
 					}
 				</div>
 			);
-        })}
+		})}
 	</div>
 );
 }
