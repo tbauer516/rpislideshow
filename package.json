@@ -1,12 +1,13 @@
 {
-  "name": "RPI-Slideshow",
-  "version": "0.0.1",
+  "name": "rpislideshow",
+  "version": "1.0.0",
   "description": "An application to turn an raspberry pi into a picture frame with weather display",
   "author": "Tyler Bauer <tcbauer516@gmail.com>",
   "scripts": {
-    "start": "sh kiosk.sh & node express/server.js",
-    "test": "sh test.sh & node express/server.js",
-    "serve": "node express/server.js"
+    "start": "node express/setup.js && ./kiosk.sh > /dev/null 2>&1 & cd express && node server.js",
+    "test": "node express/setup.js && ./test.sh > /dev/null 2>&1 & cd express && node server.js",
+    "server": "node express/setup.js && node express/server.js",
+    "setup": "./setup.sh && cd react && npm install && cd ../express && npm install && cd ../react && npm run build"
   },
   "keywords": [
     "raspberry",

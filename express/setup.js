@@ -1,7 +1,7 @@
 const fs = require('fs');
 const request = require('request');
 
-const configFile = './app/config/user-config.json';
+const configFile = './express/app/config/user-config.json';
 
 const checkForConfig = () => {
 	return new Promise((resolve, reject) => {
@@ -76,6 +76,7 @@ const main = () => {
 	})
 	.catch(err => {
 		throw(err);
+		process.exit(1);
 	});
 };
 

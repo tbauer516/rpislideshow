@@ -19,3 +19,5 @@ userStore/
 config/
 media/
 mediaData/
+
+live.sh
