@@ -2,7 +2,7 @@ const root = './app/';
 const fs = require('fs');
 const express = require('express');
 const passport = require('./logic/passport.js');
-const darknet = require('./logic/darknet.js');
+const darksky = require('./logic/darksky.js');
 const photos = require('./logic/googlephotos.js');
 
 const oneDay = 86400000;
@@ -19,14 +19,14 @@ module.exports = (app) => {
 		if (!type)
 			res.redirect('/error');
 
-		darknet.getWeather(type)
+		darksky.getWeather(type)
 		.then((data) => {
 			res.json(data);
 		});
 		
 	});
 
-	app.get('/api/photos', (req, res) => {
+	app.get('/api/photos', passport.ajaxLoggedIn, (req, res) => {
 		console.log('request to sync drive received');
 		photos.syncImages(req.user)
 		.then(() => {

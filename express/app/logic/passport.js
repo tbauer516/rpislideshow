@@ -71,8 +71,16 @@ module.exports.isLoggedIn = (req, res, next) => {
 		return next();
 	}
 
-	// return res.redirect('/error?message=' + encodeURIComponent('you are not logged in'));
 	return res.redirect('/login');
+};
+
+module.exports.ajaxLoggedIn = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		let userID = req.user.id;
+		return next();
+	}
+
+	return res.status(403);
 };
 
 module.exports.initialize = () => {

@@ -4,7 +4,6 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const app = express();
 const FileStore = require('session-file-store')(session);
-const passport = require('./app/logic/passport.js');
 
 const oneDay = 86400000;
 const port = 3001;

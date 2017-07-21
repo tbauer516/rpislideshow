@@ -1,6 +1,6 @@
 const fs = require('fs');
 const request = require('request');
-const key = require('../config/darknet.json').secret;
+const key = require('../config/darksky.json').secret;
 const config = require('../config/user-config.json');
 
 const baseUrl = 'https://api.darksky.net/forecast/';

@@ -9,6 +9,7 @@ constructor(props) {
 		img: ''
 	};
 	this.lastSync = 0;
+	this.startTime = new Date().getTime();
 }
 
 componentDidMount() {
@@ -26,7 +27,7 @@ componentWillUnmount() {
 update() {
 	let time = new Date().getTime();
 	let prom = Promise.resolve();
-	if (time - this.lastSync > 86400000) { // 24 hours
+	if (time - this.startTime > 30000 && time - this.lastSync > 86400000) { // 24 hours
 		prom = photos.syncDrive();
 		this.lastSync = time;
 	}
@@ -38,6 +39,9 @@ update() {
 		this.setState({
 			img: data
 		});
+	})
+	.catch(err => {
+		window.location.href = 'http://localhost:3001/login';
 	});
 }
 

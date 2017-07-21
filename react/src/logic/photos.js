@@ -10,6 +10,8 @@ const request = {
 export const getNewPhoto = () => {
 	return fetch('/api/photo', request)
 	.then(response => {
+		if (!response.ok)
+			throw('Not OK');
 		return response.text();
 	})
 	.then(data => {
